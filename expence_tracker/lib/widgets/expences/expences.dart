@@ -1,7 +1,17 @@
 import 'package:expence_tracker/models/expences_model.dart';
+import 'package:expence_tracker/widgets/charts/chart.dart';
 import 'package:expence_tracker/widgets/new_expence/new_expence.dart';
 import 'package:flutter/material.dart';
 import 'package:expence_tracker/widgets/expences_list/expences_list_view.dart';
+
+class Test {
+  String a;
+  String b;
+
+  Test({ required this.a, required this.b });
+
+  Test.withDefaultA({required this.a}) : b = 'name';
+}
 
 class Expences extends StatefulWidget {
   const Expences({super.key});
@@ -120,10 +130,34 @@ class _ExpcensState extends State<Expences> {
       ),
       body: Column(
         children: [
-          const Text('expences chat'),
+          Chart(expenses: expences),
           Expanded(child: contentToDisplay),
         ],
       ),
     );
+  }
+}
+
+
+class ExpensesBucket {
+  ExpensesBucket(
+    {
+    required this.category, 
+    required this.expences,
+    });
+
+  ExpensesBucket.forCategory(List<ExpencesModel> allExpenses, this.category)
+  : expences = allExpenses.where((expence) => expence.category == category)
+  .toList();
+
+  final ExpencesCategory category;
+  final List<ExpencesModel> expences;
+
+  double get totalExpencesAmount {
+    double total = 0;
+    for (final eachExpence in expences) {
+      total += eachExpence.amount;
+    }
+    return total;
   }
 }

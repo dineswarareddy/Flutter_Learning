@@ -30,12 +30,13 @@ class _ExpencesListState extends State<ExpencesList> {
         key: ValueKey(widget.expencesList[index].id),
         onDismissed: (direction) => {
           if(direction == DismissDirection.endToStart) {
+            print('converting food enum to string ${ExpencesCategory.food.toString}'),
             print('it entered inside endToStart direction'),
             widget.removeExpence(widget.expencesList[index]),
           } else if(direction == DismissDirection.startToEnd) {
             print('it entered inside startToEnd direction')
           }
         },
-        child: ExpencesListCell(expencesModel: widget.expencesList[index],)));
+        child: ExpencesListCell(expencesModel: widget.expencesList[index])));
   }
 }
