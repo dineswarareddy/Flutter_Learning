@@ -3,7 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:expence_tracker/models/expences_model.dart';
 
 class NewExpence extends StatefulWidget {
-  const NewExpence({super.key});
+  const NewExpence({required this.addExpence, super.key});
+
+  final Function(ExpencesModel expence) addExpence;
+
   @override
   State<NewExpence> createState() {
     return _NewExpenceState();
@@ -66,6 +69,13 @@ class _NewExpenceState extends State<NewExpence> {
     if (_titleController.text.trim().isNotEmpty &&
         isAmountValid &&
         selectedDate != null) {
+      final newExpence = ExpencesModel(
+          title: _titleController.text,
+          amount: enteredAmount,
+          date: selectedDate!,
+          category: selectedDropDownValue);
+      widget.addExpence(newExpence);
+      Navigator.pop(context);
     } else {
       // show error message
       showDialog(
@@ -89,14 +99,14 @@ class _NewExpenceState extends State<NewExpence> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.fromLTRB(8, 48, 8, 8),
       child: Column(
         children: [
           TextField(
             controller: _titleController,
             maxLength: 50,
             onChanged: valueChangedInText,
-            decoration: InputDecoration(labelText: 'expence name'),
+            decoration: InputDecoration(labelText: 'Expence name'),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,

@@ -4,9 +4,11 @@ import 'expences_details_list_cell.dart';
 
 class ExpencesList extends StatefulWidget {
   const ExpencesList({
+    required this.removeExpence,
     required this.expencesList, 
     super.key});
 
+  final Function(ExpencesModel) removeExpence;
   final List<ExpencesModel> expencesList;
 
   @override
@@ -21,13 +23,15 @@ class _ExpencesListState extends State<ExpencesList> {
     return ListView.builder(
       itemCount: widget.expencesList.length, 
       itemBuilder: (context, index) => Dismissible(
-        key: Key(widget.expencesList[index].id),
+        background: Container(
+          color: Theme.of(context).colorScheme.error,
+          margin: EdgeInsets.symmetric(horizontal: 16),
+          ),
+        key: ValueKey(widget.expencesList[index].id),
         onDismissed: (direction) => {
           if(direction == DismissDirection.endToStart) {
             print('it entered inside endToStart direction'),
-            setState(() {
-              widget.expencesList.removeAt(index);
-            })
+            widget.removeExpence(widget.expencesList[index]),
           } else if(direction == DismissDirection.startToEnd) {
             print('it entered inside startToEnd direction')
           }

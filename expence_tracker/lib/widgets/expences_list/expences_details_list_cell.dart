@@ -17,12 +17,11 @@ class ExpencesListCell extends StatelessWidget {
       vertical: 10),
       child: 
       Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
           Text(expencesModel.title,
           style: TextStyle(fontWeight: FontWeight.bold),),
-          Spacer(),
-          ],),
+          SizedBox(height: 4),
           Row(children: [
             Text('\$${expencesModel.amount.toStringAsFixed(2)}'),
             Spacer(),

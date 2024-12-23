@@ -4,58 +4,126 @@ import 'package:flutter/material.dart';
 import 'package:expence_tracker/widgets/expences_list/expences_list_view.dart';
 
 class Expences extends StatefulWidget {
-
   const Expences({super.key});
 
   @override
   State<StatefulWidget> createState() {
-   return _ExpcensState();
+    return _ExpcensState();
   }
 }
 
 class _ExpcensState extends State<Expences> {
+  List<ExpencesModel> expences = [];
 
-final List<ExpencesModel> _expences = [
-  ExpencesModel(title: 'Dress', amount: 10, date: DateTime.now(), category: ExpencesCategory.travel),
-  ExpencesModel(title: 'Pizza', amount: 19, date: DateTime.now(), category: ExpencesCategory.food),
-  ExpencesModel(title: 'Hotel', amount: 99, date: DateTime.now(), category: ExpencesCategory.leisure)
-];
+  void addExpence(ExpencesModel newExpence) {
+    setState(() {
+      expences.add(newExpence);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text('Expences added'),
+        action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              setState(() {
+                expences.removeLast();  
+              });
+            }),
+      ),
+    );
+  }
 
-void showAddComponentView() {
-  showModalBottomSheet(context: context, builder: (ctx) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-        Text('First Model'),
-        NewExpence(),
-        Spacer(),
-      ],),
-    ); 
-  },
-  isScrollControlled: true,
-  );
-}
+  void removeExpence(ExpencesModel expence) {
+    final removedItemIndex = expences.indexOf(expence);
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Removed Expences'),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: (() {
+            setState(() {
+              expences.insert(removedItemIndex, expence);  
+            });
+          }),
+        ),
+      ),
+    );
+    setState(() {
+      expences.remove(expence);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Expences added'),
+        action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              expences.removeLast();
+            }),
+      ),
+    );
+  }
+
+  void showAddComponentView() {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              NewExpence(addExpence: addExpence),
+              Spacer(),
+            ],
+          ),
+        );
+      },
+      isScrollControlled: true,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    Widget contentToDisplay = const Center(
+      child: Text('Add some expences to view'),
+    );
+    if (expences.isNotEmpty) {
+      contentToDisplay =
+          ExpencesList(removeExpence: removeExpence, expencesList: expences);
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Learning', textAlign: TextAlign.left,),
-        actions: [
-          IconButton(onPressed: (){
-            showAddComponentView();
-          }, icon: const Icon(Icons.add))
-        ],
-        backgroundColor: Colors.blueAccent,),
-      body: Column(
-          children: [
-            const Text('expences chat'),
-            Expanded(child: ExpencesList(expencesList: _expences)),
-          ],
+        title: Text(
+          'Learning',
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showAddComponentView();
+              },
+              icon: const Icon(Icons.add),
+              color: Colors.white,
+              )
+        ],
+        // backgroundColor: Colors.blueAccent,
+      ),
+      body: Column(
+        children: [
+          const Text('expences chat'),
+          Expanded(child: contentToDisplay),
+        ],
+      ),
     );
   }
 }
