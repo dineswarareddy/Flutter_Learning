@@ -10,7 +10,7 @@ class ExpencesList extends StatefulWidget {
   final List<ExpencesModel> expencesList;
 
   @override
-  State<StatefulWidget> createState() {
+  State<ExpencesList> createState() {
     return _ExpencesListState();
   }
 }

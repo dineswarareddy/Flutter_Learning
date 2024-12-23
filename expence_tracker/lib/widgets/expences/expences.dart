@@ -1,4 +1,5 @@
 import 'package:expence_tracker/models/expences_model.dart';
+import 'package:expence_tracker/widgets/new_expence/new_expence.dart';
 import 'package:flutter/material.dart';
 import 'package:expence_tracker/widgets/expences_list/expences_list_view.dart';
 
@@ -22,14 +23,20 @@ final List<ExpencesModel> _expences = [
 
 void showAddComponentView() {
   showModalBottomSheet(context: context, builder: (ctx) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-      Text('First Model'),
-      Spacer(),
-    ],); 
-  });
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+        Text('First Model'),
+        NewExpence(),
+        Spacer(),
+      ],),
+    ); 
+  },
+  isScrollControlled: true,
+  );
 }
 
   @override

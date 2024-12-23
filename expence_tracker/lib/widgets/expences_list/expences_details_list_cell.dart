@@ -6,7 +6,7 @@ class ExpencesListCell extends StatelessWidget {
   const ExpencesListCell({required this.expencesModel, super.key});
 
   final ExpencesModel expencesModel;
-
+  
   @override
   Widget build(BuildContext context) {
     return Card(
