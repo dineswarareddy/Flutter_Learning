@@ -37,6 +37,7 @@ class _NewExpenceState extends State<NewExpence> {
   void dispose() {
     _titleController.dispose();
     _amountController.dispose();
+    super.dispose();
   }
 
   calendarIconPressed() async {
@@ -179,7 +180,27 @@ class _NewExpenceState extends State<NewExpence> {
                     onPressed: submitButtonAction,
                     child: Text('Press to save')),
               ],
+            ),
+            SizedBox(
+              height: 200,
+              child: 
+              ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 3,
+              itemBuilder: (context, index) => 
+              Text('value $index'),
+            ),
             )
+            
+
+            // Row(children: [
+              // ListView.builder(
+              //   itemCount: 3,
+              //   itemBuilder: (context, index) => 
+              //   Text('value $index')
+              // ),
+            // ]
+            // )
           ],
         ),
       ),

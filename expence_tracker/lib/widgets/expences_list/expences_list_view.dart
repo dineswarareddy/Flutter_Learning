@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'expences_details_list_cell.dart';
 
 class ExpencesList extends StatefulWidget {
-  const ExpencesList({
-    required this.removeExpence,
-    required this.expencesList, 
-    super.key});
+  const ExpencesList(
+      {required this.removeExpence, required this.expencesList, super.key});
 
   final Function(ExpencesModel) removeExpence;
   final List<ExpencesModel> expencesList;
@@ -20,23 +18,31 @@ class ExpencesList extends StatefulWidget {
 class _ExpencesListState extends State<ExpencesList> {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widget.expencesList.length, 
-      itemBuilder: (context, index) => Dismissible(
-        background: Container(
-          color: Theme.of(context).colorScheme.error,
-          margin: EdgeInsets.symmetric(horizontal: 16),
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        // scrollDirection: Axis.horizontal,
+        itemCount: widget.expencesList.length,
+        itemBuilder: (context, index) => Dismissible(
+          background: Container(
+            color: Theme.of(context).colorScheme.error,
+            margin: EdgeInsets.symmetric(horizontal: 16),
           ),
-        key: ValueKey(widget.expencesList[index].id),
-        onDismissed: (direction) => {
-          if(direction == DismissDirection.endToStart) {
-            print('converting food enum to string ${ExpencesCategory.food.toString}'),
-            print('it entered inside endToStart direction'),
-            widget.removeExpence(widget.expencesList[index]),
-          } else if(direction == DismissDirection.startToEnd) {
-            print('it entered inside startToEnd direction')
-          }
-        },
-        child: ExpencesListCell(expencesModel: widget.expencesList[index])));
+          key: ValueKey(widget.expencesList[index].id),
+          onDismissed: (direction) => {
+            if (direction == DismissDirection.endToStart)
+              {
+                print(
+                    'converting food enum to string ${ExpencesCategory.food.toString}'),
+                print('it entered inside endToStart direction'),
+                widget.removeExpence(widget.expencesList[index]),
+              }
+            else if (direction == DismissDirection.startToEnd)
+              {print('it entered inside startToEnd direction')}
+          },
+          child: ExpencesListCell(expencesModel: widget.expencesList[index]),
+        ),
+      ),
+    );
   }
 }
