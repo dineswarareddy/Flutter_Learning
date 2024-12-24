@@ -8,7 +8,7 @@ class Test {
   String a;
   String b;
 
-  Test({ required this.a, required this.b });
+  Test({required this.a, required this.b});
 
   Test.withDefaultA({required this.a}) : b = 'name';
 }
@@ -38,7 +38,7 @@ class _ExpcensState extends State<Expences> {
             label: 'Undo',
             onPressed: () {
               setState(() {
-                expences.removeLast();  
+                expences.removeLast();
               });
             }),
       ),
@@ -56,7 +56,7 @@ class _ExpcensState extends State<Expences> {
           label: 'Undo',
           onPressed: (() {
             setState(() {
-              expences.insert(removedItemIndex, expence);  
+              expences.insert(removedItemIndex, expence);
             });
           }),
         ),
@@ -80,6 +80,7 @@ class _ExpcensState extends State<Expences> {
 
   void showAddComponentView() {
     showModalBottomSheet(
+      useSafeArea: true,
       context: context,
       builder: (ctx) {
         return Padding(
@@ -100,6 +101,9 @@ class _ExpcensState extends State<Expences> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     Widget contentToDisplay = const Center(
       child: Text('Add some expences to view'),
     );
@@ -119,36 +123,44 @@ class _ExpcensState extends State<Expences> {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                showAddComponentView();
-              },
-              icon: const Icon(Icons.add),
-              color: Colors.white,
-              )
+            onPressed: () {
+              showAddComponentView();
+            },
+            icon: const Icon(Icons.add),
+            color: Colors.white,
+          )
         ],
         // backgroundColor: Colors.blueAccent,
       ),
-      body: Column(
-        children: [
-          Chart(expenses: expences),
-          Expanded(child: contentToDisplay),
-        ],
-      ),
+      body: width > 600
+          ? Row(
+              children: [
+                Expanded(child: 
+                  Chart(expenses: expences)
+                ),
+                Expanded(child: contentToDisplay),
+              ],
+            )
+          : Column(
+              children: [
+                Chart(expenses: expences),
+                Expanded(child: contentToDisplay),
+              ],
+            ),
     );
   }
 }
 
-
 class ExpensesBucket {
-  ExpensesBucket(
-    {
-    required this.category, 
+  ExpensesBucket({
+    required this.category,
     required this.expences,
-    });
+  });
 
   ExpensesBucket.forCategory(List<ExpencesModel> allExpenses, this.category)
-  : expences = allExpenses.where((expence) => expence.category == category)
-  .toList();
+      : expences = allExpenses
+            .where((expence) => expence.category == category)
+            .toList();
 
   final ExpencesCategory category;
   final List<ExpencesModel> expences;

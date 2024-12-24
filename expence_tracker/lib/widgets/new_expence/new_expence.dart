@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:expence_tracker/models/expences_model.dart';
@@ -17,6 +20,8 @@ class _NewExpenceState extends State<NewExpence> {
   var inputText = '';
   DateTime? selectedDate;
   final formatter = DateFormat.yMd();
+
+  bool showInputField = true;
 
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
@@ -60,6 +65,7 @@ class _NewExpenceState extends State<NewExpence> {
   }
 
   void cancelAddExpences() {
+    // showInputField = false;
     Navigator.pop(context);
   }
 
@@ -78,6 +84,28 @@ class _NewExpenceState extends State<NewExpence> {
       Navigator.pop(context);
     } else {
       // show error message
+      showErrorAlert();
+    }
+  }
+
+  void showErrorAlert() {
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        context: context,
+        builder: (ctxt) => CupertinoAlertDialog(
+          title: Text('Invalid inputs'),
+          content: Text('Enter valid inputs for fields'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
       showDialog(
         context: context,
         builder: (ctxt) => AlertDialog(
@@ -98,58 +126,62 @@ class _NewExpenceState extends State<NewExpence> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(8, 48, 8, 8),
-      child: Column(
-        children: [
-          TextField(
-            controller: _titleController,
-            maxLength: 50,
-            onChanged: valueChangedInText,
-            decoration: InputDecoration(labelText: 'Expence name'),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: TextField(
+    // final keyboardTop = MediaQuery.of(context).viewInsets.bottom;
+    // final width = MediaQuery.of(context).size.width;
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(8, 8, 8, 16),
+        child: Column(
+          children: [
+            TextField(
+              controller: _titleController,
+              maxLength: 50,
+              onChanged: valueChangedInText,
+              decoration: InputDecoration(labelText: 'Expence name'),
+            ),
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.end,
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: TextField(
                   decoration: InputDecoration(
                     labelText: 'Amount',
                     prefixText: '\$ ',
                   ),
                   controller: _amountController,
                   keyboardType: TextInputType.numberWithOptions(),
+                )),
+                SizedBox(width: 16),
+                Text((selectedDateString != null)
+                    ? selectedDateString!
+                    : 'No date selected'),
+                IconButton(
+                    onPressed: calendarIconPressed,
+                    icon: Icon(Icons.calendar_month)),
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              children: [
+                DropdownButton(
+                  value: selectedDropDownValue,
+                  items: dropDownMenuItems,
+                  onChanged: ((value) {
+                    setState(() {
+                      selectedDropDownValue = value;
+                    });
+                  }),
                 ),
-              ),
-              SizedBox(width: 16),
-              Text((selectedDateString != null)
-                  ? selectedDateString!
-                  : 'No date selected'),
-              IconButton(
-                  onPressed: calendarIconPressed,
-                  icon: Icon(Icons.calendar_month)),
-            ],
-          ),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              DropdownButton(
-                value: selectedDropDownValue,
-                items: dropDownMenuItems,
-                onChanged: ((value) {
-                  setState(() {
-                    selectedDropDownValue = value;
-                  });
-                }),
-              ),
-              Spacer(),
-              TextButton(onPressed: cancelAddExpences, child: Text('Cancel')),
-              ElevatedButton(
-                  onPressed: submitButtonAction, child: Text('Press to save')),
-            ],
-          )
-        ],
+                Spacer(),
+                TextButton(onPressed: cancelAddExpences, child: Text('Cancel')),
+                ElevatedButton(
+                    onPressed: submitButtonAction,
+                    child: Text('Press to save')),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

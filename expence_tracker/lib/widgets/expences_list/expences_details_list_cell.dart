@@ -20,7 +20,7 @@ class ExpencesListCell extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(expencesModel.title,
-          style: TextStyle(fontWeight: FontWeight.bold),),
+          style: Theme.of(context).textTheme.titleLarge),
           SizedBox(height: 4),
           Row(children: [
             Text('\$${expencesModel.amount.toStringAsFixed(2)}'),
