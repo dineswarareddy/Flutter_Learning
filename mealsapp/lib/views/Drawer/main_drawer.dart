@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MainDrawer extends StatelessWidget {
-  MainDrawer({super.key});
-  final List<String> sideMenuItems = ['Meals', 'Filters'];
+  const MainDrawer({required this.menuSelected, super.key});
+
+  final Function(String) menuSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -38,15 +39,16 @@ class MainDrawer extends StatelessWidget {
             leading: Icon(Icons.restaurant, size: 25, color: Theme.of(context).colorScheme.primary),
             title: Text('Meals', style: TextStyle(color: Colors.white)),
             onTap: () {
-              print('meals tapped');
+              Navigator.pop(context);
+              menuSelected('meals');
             },
           ),
           ListTile(
             leading: Icon(Icons.settings, size: 25, color: Theme.of(context).colorScheme.primary),
             title: Text('Filter', style: TextStyle(color: Colors.white)),
             onTap: () {
-              print('settings tapped');
-              
+              Navigator.pop(context);
+              menuSelected('filter');
             },
           )
         ],

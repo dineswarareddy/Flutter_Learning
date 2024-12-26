@@ -7,7 +7,9 @@ import 'package:mealsapp/model/meals_model.dart';
 import '../MealsViews/meals_screen.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({required this.favoriteToggled, super.key});
+  const CategoriesScreen({required this.mealsListPostFilter, required this.favoriteToggled, super.key});
+
+  final List<Meal> mealsListPostFilter;
   final Function(Meal meal) favoriteToggled;
   itemTappedTarget(
       {required Category category, required BuildContext context}) {
@@ -22,7 +24,7 @@ class CategoriesScreen extends StatelessWidget {
   }
 
   List<Meal> getMealsForCategory(String categoryId) {
-    return dummyMeals
+    return mealsListPostFilter
         .where((item) => item.categories.contains(categoryId))
         .toList();
   }

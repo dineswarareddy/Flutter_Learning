@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:mealsapp/data/dymmy_data.dart';
 import 'package:mealsapp/main.dart';
 import 'package:mealsapp/model/meals_model.dart';
 import 'package:mealsapp/views/Drawer/main_drawer.dart';
+import 'package:mealsapp/views/FiltersView/filter_screen.dart';
 import 'package:mealsapp/views/MealsViews/meals_screen.dart';
 import 'CategoryViews/categories.dart';
+
+  const kInitialFilters = {
+    foodTypes.glutenFree: false,
+    foodTypes.lactoseFree: false,
+    foodTypes.vegan: false,
+    foodTypes.vegetarian: false
+  };
 
 class HomeTabbarView extends StatefulWidget {
   const HomeTabbarView({super.key});
@@ -19,6 +28,10 @@ class _HomeTabbarViewState extends State<HomeTabbarView> {
   int currentTabIndex = 0;
   Widget? currentScreen;
   List<Meal> favorites = [];
+
+
+  Map<foodTypes, bool> filtersSelected = kInitialFilters;
+
   void manageFavorites(Meal meal) {
     print('manage favorites called');
     setState(() {
@@ -38,15 +51,53 @@ class _HomeTabbarViewState extends State<HomeTabbarView> {
         content: Text(isItemAdded ? 'Favorites Added' : 'Favorites Removed')));
   }
 
+  menuSelected(String selectedScrenName) async {
+    if (selectedScrenName == 'filter') {
+      final result = await Navigator.of(context).push<Map<foodTypes, bool>>(
+        MaterialPageRoute(
+          builder: (ctxt) => FilterScreen(currentFilter: filtersSelected),
+        ),
+      );
+      setState(() {
+          filtersSelected = result ?? kInitialFilters;
+      });
+      print('value receied post pop back $result');
+    }
+  }
+
+   List<Meal> filterMealsBasedOnfilter() {
+    final availabeMeals = dummyMeals.where((item) { 
+      if(filtersSelected[foodTypes.glutenFree]! && !item.isGlutenFree) {
+        return false;
+      }
+      if(filtersSelected[foodTypes.lactoseFree]! && !item.isLactoseFree) {
+        return false;
+      }
+      if(filtersSelected[foodTypes.vegetarian]! && !item.isVegetarian) {
+        return false;
+      }
+      if(filtersSelected[foodTypes.vegan]! && !item.isVegan) {
+        return false;
+      }
+      return true;
+    }).toList();
+    return availabeMeals;
+  }
+
   @override
   Widget build(BuildContext context) {
-    currentScreen = CategoriesScreen(favoriteToggled: (mealItem) {
+
+    final filterMeals = filterMealsBasedOnfilter();
+
+    currentScreen = CategoriesScreen(mealsListPostFilter: filterMeals,
+     favoriteToggled: (mealItem) {
       manageFavorites(mealItem);
     });
 
     if (currentTabIndex == 0) {
       pageTitle = 'Categories';
-      currentScreen = CategoriesScreen(favoriteToggled: (mealItem) {
+      currentScreen = CategoriesScreen(mealsListPostFilter: filterMeals,
+       favoriteToggled: (mealItem) {
         manageFavorites(mealItem);
       });
     } else {
@@ -61,7 +112,7 @@ class _HomeTabbarViewState extends State<HomeTabbarView> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        drawer: MainDrawer(),
+        drawer: MainDrawer(menuSelected: menuSelected),
         appBar: AppBar(title: Text(pageTitle)),
         body: currentScreen,
         bottomNavigationBar: BottomNavigationBar(
