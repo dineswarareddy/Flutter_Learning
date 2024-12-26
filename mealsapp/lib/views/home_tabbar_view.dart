@@ -1,49 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:mealsapp/data/dymmy_data.dart';
-import 'package:mealsapp/main.dart';
+// import 'package:mealsapp/data/dymmy_data.dart';
+// import 'package:mealsapp/main.dart';
 import 'package:mealsapp/model/meals_model.dart';
+import 'package:mealsapp/provider/favorites_provider.dart';
 import 'package:mealsapp/views/Drawer/main_drawer.dart';
 import 'package:mealsapp/views/FiltersView/filter_screen.dart';
 import 'package:mealsapp/views/MealsViews/meals_screen.dart';
 import 'CategoryViews/categories.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mealsapp/provider/meals_provider.dart';
+import 'package:mealsapp/provider/filter_provider.dart';
 
   const kInitialFilters = {
-    foodTypes.glutenFree: false,
-    foodTypes.lactoseFree: false,
-    foodTypes.vegan: false,
-    foodTypes.vegetarian: false
+    FoodType.glutenFree: false,
+    FoodType.lactoseFree: false,
+    FoodType.vegan: false,
+    FoodType.vegetarian: false
   };
 
-class HomeTabbarView extends StatefulWidget {
+class HomeTabbarView extends ConsumerStatefulWidget {
   const HomeTabbarView({super.key});
 
   @override
-  State<HomeTabbarView> createState() {
+  ConsumerState<HomeTabbarView> createState() {
     return _HomeTabbarViewState();
   }
 }
 
-class _HomeTabbarViewState extends State<HomeTabbarView> {
+class _HomeTabbarViewState extends ConsumerState<HomeTabbarView> {
   String pageTitle = 'Categories';
   int currentTabIndex = 0;
   Widget? currentScreen;
-  List<Meal> favorites = [];
 
 
-  Map<foodTypes, bool> filtersSelected = kInitialFilters;
-
-  void manageFavorites(Meal meal) {
-    print('manage favorites called');
-    setState(() {
-      if (favorites.contains(meal)) {
-        favorites.remove(meal);
-        showInfoMessage(false);
-      } else {
-        favorites.add(meal);
-        showInfoMessage(true);
-      }
-    });
-  }
+  // void manageFavorites(Meal meal) {
+  //   print('manage favorites called');
+  //   setState(() {
+  //     if (favorites.contains(meal)) {
+  //       favorites.remove(meal);
+  //       showInfoMessage(false);
+  //     } else {
+  //       favorites.add(meal);
+  //       showInfoMessage(true);
+  //     }
+  //   });
+  // }
 
   void showInfoMessage(bool isItemAdded) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -53,35 +54,12 @@ class _HomeTabbarViewState extends State<HomeTabbarView> {
 
   menuSelected(String selectedScrenName) async {
     if (selectedScrenName == 'filter') {
-      final result = await Navigator.of(context).push<Map<foodTypes, bool>>(
-        MaterialPageRoute(
-          builder: (ctxt) => FilterScreen(currentFilter: filtersSelected),
-        ),
-      );
-      setState(() {
-          filtersSelected = result ?? kInitialFilters;
-      });
-      print('value receied post pop back $result');
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => FilterScreen(),),);
     }
   }
 
    List<Meal> filterMealsBasedOnfilter() {
-    final availabeMeals = dummyMeals.where((item) { 
-      if(filtersSelected[foodTypes.glutenFree]! && !item.isGlutenFree) {
-        return false;
-      }
-      if(filtersSelected[foodTypes.lactoseFree]! && !item.isLactoseFree) {
-        return false;
-      }
-      if(filtersSelected[foodTypes.vegetarian]! && !item.isVegetarian) {
-        return false;
-      }
-      if(filtersSelected[foodTypes.vegan]! && !item.isVegan) {
-        return false;
-      }
-      return true;
-    }).toList();
-    return availabeMeals;
+    return ref.watch(filterMealsProvider);
   }
 
   @override
@@ -89,24 +67,16 @@ class _HomeTabbarViewState extends State<HomeTabbarView> {
 
     final filterMeals = filterMealsBasedOnfilter();
 
-    currentScreen = CategoriesScreen(mealsListPostFilter: filterMeals,
-     favoriteToggled: (mealItem) {
-      manageFavorites(mealItem);
-    });
+    currentScreen = CategoriesScreen(mealsListPostFilter: filterMeals);
 
     if (currentTabIndex == 0) {
       pageTitle = 'Categories';
-      currentScreen = CategoriesScreen(mealsListPostFilter: filterMeals,
-       favoriteToggled: (mealItem) {
-        manageFavorites(mealItem);
-      });
+      currentScreen = CategoriesScreen(mealsListPostFilter: filterMeals);
     } else {
       pageTitle = 'Favorites';
+      final favoriteMeals = ref.watch(favoriteMealsProvider);
       currentScreen = MealsScreen(
-          favoriteToggled: (mealItem) {
-            manageFavorites(mealItem);
-          },
-          meals: favorites);
+          meals: favoriteMeals);
     }
 
     return DefaultTabController(

@@ -6,10 +6,8 @@ import 'meals_card_view.dart';
 class MealsScreen extends StatelessWidget {
   final String? screenTitle;
   final List<Meal> meals;
-  final Function(Meal meal) favoriteToggled;
   const MealsScreen(
-      {required this.favoriteToggled,
-      required this.meals,
+      {required this.meals,
       this.screenTitle,
       super.key});
 
@@ -17,8 +15,7 @@ class MealsScreen extends StatelessWidget {
       {required BuildContext context, required Meal mealToDisplay}) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctxt) => MealDetailsScreen(
-            favoriteToggled: favoriteToggled, mealDetails: mealToDisplay),
+        builder: (ctxt) => MealDetailsScreen(mealDetails: mealToDisplay),
       ),
     );
   }

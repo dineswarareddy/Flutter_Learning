@@ -7,16 +7,14 @@ import 'package:mealsapp/model/meals_model.dart';
 import '../MealsViews/meals_screen.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({required this.mealsListPostFilter, required this.favoriteToggled, super.key});
+  const CategoriesScreen({required this.mealsListPostFilter, super.key});
 
   final List<Meal> mealsListPostFilter;
-  final Function(Meal meal) favoriteToggled;
   itemTappedTarget(
       {required Category category, required BuildContext context}) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => MealsScreen(
-          favoriteToggled: favoriteToggled,
             meals: getMealsForCategory(category.id),
             screenTitle: category.title),
       ),
