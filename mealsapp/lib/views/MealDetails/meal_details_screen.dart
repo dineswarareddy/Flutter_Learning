@@ -21,19 +21,28 @@ class MealDetailsScreen extends ConsumerWidget {
     }
 
     final favorites = ref.watch(favoriteMealsProvider);
-
+    final isFavorite = favorites.contains(mealDetails);
     return Scaffold(
       appBar: AppBar(
         title: Text(mealDetails.title),
         actions: [
           IconButton(
-              onPressed: () {
-                isItemAdded = ref
-                    .read(favoriteMealsProvider.notifier)
-                    .toggleMealsAsFavorite(mealDetails);
-                showFavoriteModificationMessage();
+            onPressed: () {
+              isItemAdded = ref
+                  .read(favoriteMealsProvider.notifier)
+                  .toggleMealsAsFavorite(mealDetails);
+              showFavoriteModificationMessage();
+            },
+            icon: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              transitionBuilder: (child, animation) {
+                return RotationTransition(turns: animation, child: child);
               },
-              icon: favorites.contains(mealDetails) ? Icon(Icons.favorite) : Icon(Icons.favorite_border_sharp)),
+              child: Icon(
+                  isFavorite ? Icons.favorite : Icons.favorite_border_sharp,
+                  key: ValueKey(isFavorite)),
+            ),
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -42,12 +51,15 @@ class MealDetailsScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            FadeInImage(
-              placeholder: MemoryImage(kTransparentImage),
-              image: NetworkImage(mealDetails.imageUrl),
-              width: double.infinity,
-              height: 250,
-              fit: BoxFit.fill,
+            Hero(
+              tag: mealDetails.id,
+              child: FadeInImage(
+                placeholder: MemoryImage(kTransparentImage),
+                image: NetworkImage(mealDetails.imageUrl),
+                width: double.infinity,
+                height: 250,
+                fit: BoxFit.fill,
+              ),
             ),
             IngredientsListView(ingredients: mealDetails.ingredients),
             StepView(steps: mealDetails.steps)

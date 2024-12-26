@@ -30,12 +30,15 @@ class MealsListCardView extends StatelessWidget {
         margin: EdgeInsets.all(16),
         child: Stack(
           children: [
-            FadeInImage(
-                placeholder: MemoryImage(kTransparentImage),
-                image: NetworkImage(mealToDiplay.imageUrl),
-                fit: BoxFit.cover,
-                height: 200,
-                width: double.infinity),
+            Hero(
+              tag: mealToDiplay.id,
+              child: FadeInImage(
+                  placeholder: MemoryImage(kTransparentImage),
+                  image: NetworkImage(mealToDiplay.imageUrl),
+                  fit: BoxFit.cover,
+                  height: 200,
+                  width: double.infinity),
+            ),
             Positioned(
                 left: 0,
                 bottom: 0,
