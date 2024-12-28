@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shooping_list/data/categories.dart';
 import 'package:shooping_list/modal/category.dart';
 import 'package:shooping_list/modal/grocery_item.dart';
 import 'package:shooping_list/provider/grocery_items_provider.dart';
+import 'package:http/http.dart' as http;
 
 class AddGroceryScreen extends ConsumerWidget {
   final TextEditingController nameTextEditController = TextEditingController();
@@ -14,6 +17,8 @@ class AddGroceryScreen extends ConsumerWidget {
   String _enteredItemName = '';
   int _enteredQuantity = 1;
   Category? selectedCategory = categories[Categories.vegetables];
+
+  AddGroceryScreen({super.key});
 
   void validateInputs(BuildContext context, WidgetRef ref) {
     if (_formKey.currentState!.validate()) {
@@ -43,6 +48,7 @@ class AddGroceryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    fetchUsers();
     return Scaffold(
       appBar: AppBar(title: Text('Add Item')),
       body: Form(
@@ -79,7 +85,7 @@ class AddGroceryScreen extends ConsumerWidget {
                     validator: (value) {
                       if (value == null ||
                           value.isEmpty ||
-                          int.tryParse(value!) == null) {
+                          int.tryParse(value) == null) {
                         return 'Enter Quantity';
                       }
                       return null;
