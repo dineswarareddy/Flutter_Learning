@@ -19,7 +19,7 @@ class LocationInput extends StatefulWidget {
 class LocationInputState extends State<LocationInput> {
   bool _isLocationLoading = false;
 
-  final String _googlePlacesKey = 'AIzaSyDHsI2Gp5k3p3Q4DzU-kWxSuZmGqS2We8c';
+  final String _googlePlacesKey = 'xxx';
 
   LocationModel? _pickedLocation;
   String get locationImage {

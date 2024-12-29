@@ -6,7 +6,7 @@ class PlaceDetailsScreen extends ConsumerWidget {
 const PlaceDetailsScreen({required this.placeSelected, super.key});
 
 final PlacesModel placeSelected;
-  final String _googlePlacesKey = 'AIzaSyDHsI2Gp5k3p3Q4DzU-kWxSuZmGqS2We8c';
+  final String _googlePlacesKey = 'xxx';
 
   String get locationImage {
     final lat = placeSelected.location.latitude;
