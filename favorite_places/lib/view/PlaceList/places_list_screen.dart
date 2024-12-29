@@ -1,9 +1,10 @@
 import 'package:favorite_places/model/places_model.dart';
 import 'package:favorite_places/provider/places_provider.dart';
-import 'package:favorite_places/view/add_place_screen.dart';
-import 'package:favorite_places/view/place_details_screen.dart';
+import 'package:favorite_places/view/AddPlace/add_place_screen.dart';
+import 'package:favorite_places/view/PlaceDetails/place_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'places_list.dart';
 
 class PlacesListScreen extends ConsumerWidget {
   const PlacesListScreen({super.key});
@@ -25,20 +26,10 @@ class PlacesListScreen extends ConsumerWidget {
               icon: Icon(Icons.add))
         ],
       ),
-      body: ListView.builder(
-        itemCount: placesList.length,
-        itemBuilder: (ctxt, index) => ListTile(
-          title: Text(placesList[index].placeName),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (ctxt) =>
-                    PlaceDetailsScreen(placeSelected: placesList[index]),
-              ),
-            );
-          },
-        ),
-      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: PlacesList(placesList: placesList),
+      )
     );
   }
 }

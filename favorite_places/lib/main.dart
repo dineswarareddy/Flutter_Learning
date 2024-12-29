@@ -1,4 +1,4 @@
-import 'package:favorite_places/view/places_list_screen.dart';
+import 'package:favorite_places/view/PlaceList/places_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
