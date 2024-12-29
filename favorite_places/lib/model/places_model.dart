@@ -1,7 +1,7 @@
 import 'package:favorite_places/model/location_model.dart';
-import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
+
 
 class PlacesModel {
   String id;
