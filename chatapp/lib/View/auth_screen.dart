@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:chatapp/widget/user_image_picker.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -14,11 +16,29 @@ class AuthScreenState extends State<AuthScreen> {
   String? enteredPassword;
   final _formKey = GlobalKey<FormState>();
   var _isLogin = true;
-
-  submitValues() {
+  var _firebase = FirebaseAuth.instance;
+  submitValues() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      print('entered email address: $enteredEmail entered password $enteredPassword');
+      print(
+          'entered email address: $enteredEmail entered password $enteredPassword');
+    }
+    try {
+      if (_isLogin) {
+        // This is for login
+        print('This is from isLogin block');
+        final userCredential = await _firebase.signInWithEmailAndPassword(
+            email: enteredEmail!, password: enteredPassword!);
+        print(userCredential);
+      } else {
+        final userCredentials = await _firebase.createUserWithEmailAndPassword(
+            email: enteredEmail!, password: enteredPassword!);
+        print(userCredentials);
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('somethign went wrong')));
     }
   }
 
@@ -50,9 +70,10 @@ class AuthScreenState extends State<AuthScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Form(
                       key: _formKey,
-                      child: Column(
+                      child: Column(                      
                         spacing: 16,
                         children: [
+                          UserImagePicker(),
                           TextFormField(
                             decoration: InputDecoration(
                               labelText: 'Email Address',
